@@ -66,7 +66,10 @@ def sample_get_cache_itunes_data(search_term,media_term="all"):
 		cache_file_ref.close()
 		return CACHE_DICTION[unique_ident]
 
-media_dictionary = sample_get_cache_itunes_data("Jack Johnson", media_term="all")
+media_dictionary = sample_get_cache_itunes_data("Jack Johnson", media_term="all") #will not need to call this, this is a starting point
+one_result_dictionary = media_dictionary['results'][0] #passing one dictionary from all results from Jack Jonson
+
+# print(json.dumps(media_dictionary)) #converting to a string
 
 # pprint.pprint(media_dictionary)
 
@@ -74,20 +77,29 @@ media_dictionary = sample_get_cache_itunes_data("Jack Johnson", media_term="all"
 print("\n***** PROBLEM 1 *****\n")
 
 class Media(object):
-	def __init__(self, media_dictionary):
-		self.title = media_dictionary['resultCount']['results']['trackName']
-		self.author = media_dictionary['resultCount']['results']['artistName']
-		self.itunes_URL = media_dictionary['resultCount']['results']['previewUrl']
-		self.itunes_id = media_dictionary['resultCount']['results']['trackId']
+	def __init__(self, one_result_dictionary):#result is a dictionary, passing a dictionary
+		self.title = one_result_dictionary['trackName'] #takes these values of it when we pass through it
+		self.author = one_result_dictionary['artistName']
+		self.itunes_URL = one_result_dictionary['previewUrl']
+		self.itunes_id = one_result_dictionary['trackId']
 
 	def __str__(self):
 		return "{} by {}".format(self.title,self.author)
 
-	# def __repr__(self):
-	# 	return
+	def __repr__(self): #want to show more details about this object
+		return "ITUNES MEDIA: {}".format(self.itunes_id)
 
-aclass = Media(media_dictionary)
+	def __len__(self): #special len method
+		return 0
+
+	def __contains__(self, astring):
+		return astring in self.title
+
+
+aclass = Media(one_result_dictionary) #instance of a class aka object
 print (aclass)
+print (repr(aclass))
+print (len(aclass))
 
 ## For problem 1, you should define a class Media, representing ANY piece of media you can find on iTunes search.
 
@@ -153,16 +165,42 @@ print("\n***** PROBLEM 3 *****\n")
 
 ## NOTE: (The first time you run this file, data will be cached, so the data saved in each variable will be the same each time you run the file, as long as you do not delete your cached data.)
 
-media_samples = sample_get_cache_itunes_data("love")["results"]
+media_samples = sample_get_cache_itunes_data("love")["results"] #list o dictionaries, holding
 
-song_samples = sample_get_cache_itunes_data("love","music")["results"]
+song_samples = sample_get_cache_itunes_data("love","music")["results"] #list of dictionaries holding songs related to love
 
 movie_samples = sample_get_cache_itunes_data("love","movie")["results"]
 
+book_samples = sample_get_cache_itunes_data("love", "ebook")["results"]
+
+media_list = [] #creating a list of objects
+for item in media_samples: #media is a dictionary, how do i use media to initializing an instance
+	media_instance = Media(item) #object == instance
+	media_list.append(media_instance) #looped through and create a list
+
+# song_list = []
+# for item in song_samples:
+# 	song_instance = Song(item)
+# 	song_list.append(song_instance)
+#
+# movie_list = []
+# for item in movie_samples:
+# 	movie_instance = Movie(item)
+# 	movie_list.append(movie_instance)
+#
+# book_list = []
+# for item in book_samples:
+# 	book_instance = Book(item)
+# 	book_list.append(book_instance)
 
 ## You may want to do some investigation on these variables to make sure you understand correctly what type of value they hold, what's in each one!
 
 ## Use the values in these variables above, and the class definitions you've written, in order to create a list of each media type, including "media" generally.
+
+# media_list = Media(media_samples)
+# song_list = Media(song_samples)
+# movie_list = Media(movie_samples)
+# book_list = Media(book_samples)
 
 ## You should end up with: a list of Media objects saved in a variable media_list,
 ## a list of Song objects saved in a variable song_list,
