@@ -254,6 +254,24 @@ for item in movie_samples:
 ## [PROBLEM 4] [200 POINTS]
 print("\n***** PROBLEM 4 *****\n")
 
+movies = open("movies.csv","w")
+movies.write("title, artist, id, url, length\n")
+for movie in movie_list:
+	movies.write("{}, {}, {}, {}, {}\n".format(movie.title, movie.author, movie.itunes_id, movie.itunes_URL, movie.__len__))
+movies.close()
+
+songs = open("songs.csv","w")
+songs.write("title, artist, id, url, length\n")
+for song in song_list:
+	songs.write("{}, {}, {}, {}, {}\n".format(song.title, song.author, song.itunes_id, song.itunes_URL, song.__len__))
+songs.close()
+
+media = open("media.csv","w")
+media.write("title, artist, id, url, length\n")
+for item in media_list:
+	media.write("{}, {}, {}, {}, {}\n".format(item.title, item.author, item.itunes_id, item.itunes_URL, item.__len__))
+media.close()
+
 ## Finally, write 3 CSV files:
 # - movies.csv
 # - songs.csv
