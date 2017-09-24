@@ -66,12 +66,11 @@ def sample_get_cache_itunes_data(search_term,media_term="all"):
 		cache_file_ref.close()
 		return CACHE_DICTION[unique_ident]
 
-media_dictionary = sample_get_cache_itunes_data("Jack Johnson", media_term="all") #will not need to call this, this is a starting point
+media_dictionary = sample_get_cache_itunes_data("Ratatouille", media_term="movie") #will not need to call this, this is a starting point
 one_result_dictionary = media_dictionary['results'][0] #passing one dictionary from all results from Jack Jonson
 
 # print(json.dumps(media_dictionary)) #converting to a string
 
-# pprint.pprint(media_dictionary)
 
 ## [PROBLEM 1] [250 POINTS]
 print("\n***** PROBLEM 1 *****\n")
@@ -80,7 +79,7 @@ class Media(object):
 	def __init__(self, one_result_dictionary):#result is a dictionary, passing a dictionary
 		self.title = one_result_dictionary['trackName'] #takes these values of it when we pass through it
 		self.author = one_result_dictionary['artistName']
-		self.itunes_URL = one_result_dictionary['previewUrl']
+		self.itunes_URL = one_result_dictionary['trackViewUrl']
 		self.itunes_id = one_result_dictionary['trackId']
 
 	def __str__(self):
@@ -96,10 +95,10 @@ class Media(object):
 		return astring in self.title
 
 
-aclass = Media(one_result_dictionary) #instance of a class aka object
-print (aclass)
-print (repr(aclass))
-print (len(aclass))
+# aclass = Media(one_result_dictionary) #instance of a class aka object
+# print (aclass)
+# print (repr(aclass))
+# print (len(aclass))
 
 ## For problem 1, you should define a class Media, representing ANY piece of media you can find on iTunes search.
 
@@ -127,6 +126,53 @@ print("\n***** PROBLEM 2 *****\n")
 ## class Song
 ## class Movie
 
+class Song(Media):
+	def __init__(self, one_result_dictionary):
+		Media.__init__(self, one_result_dictionary)
+		self.album = one_result_dictionary["collectionName"]
+		self.track_number = one_result_dictionary["trackNumber"]
+		self.genre = one_result_dictionary["primaryGenreName"]
+		self.milliseconds = one_result_dictionary["trackTimeMillis"] #storing this because we will need to invoke in len
+
+	def __len__(self): #special len method
+		self.milliseconds = int(self.milliseconds)
+		self.seconds = (self.milliseconds/1000)
+		self.seconds = int(self.seconds)
+		return self.seconds
+
+class Movie(Media):
+	def __init__(self, one_result_dictionary):
+		Media.__init__(self, one_result_dictionary)
+		self.rating = one_result_dictionary["contentAdvisoryRating"]
+		self.genre = one_result_dictionary["primaryGenreName"]
+		if one_result_dictionary["longDescription"] == "":
+			self.description = None
+		else:
+			self.description = one_result_dictionary["longDescription"].encode('utf-8')
+		try:
+			one_result_dictionary.get("trackTimeMillis")
+			self.milliseconds = one_result_dictionary["trackTimeMillis"]
+		except KeyError:
+			self.milliseconds = 0
+
+	def __len__(self): #special len method
+		self.milliseconds = int(self.milliseconds)
+		self.minutes=(self.milliseconds/(1000*60))
+		self.minutes = int(self.minutes)
+		return self.minutes
+
+	def title_words_num(self):
+		return len(self.description)
+
+amovie = Movie(one_result_dictionary)
+print(amovie)
+print(amovie.description)
+print(len(amovie))
+
+
+# aclass = Song(one_song_dictionary) #instance of a class aka object
+# print (len(aclass))
+
 ## In the class definitions, you can assume a programmer would pass to each class's constructor only a dictionary that represented the correct media type (song, movie, audiobook/ebook).
 
 ## Below follows a description of how each of these should be different from the Media parent class.
@@ -139,7 +185,6 @@ print("\n***** PROBLEM 2 *****\n")
 ## - genre (the primary genre name from the data iTunes gives you)
 
 ## Should have the len method overridden to return the number of seconds in the song. (HINT: The data supplies number of milliseconds in the song... How can you access that data and convert it to seconds?)
-
 
 
 ### class Movie:
@@ -171,27 +216,21 @@ song_samples = sample_get_cache_itunes_data("love","music")["results"] #list of 
 
 movie_samples = sample_get_cache_itunes_data("love","movie")["results"]
 
-book_samples = sample_get_cache_itunes_data("love", "ebook")["results"]
-
 media_list = [] #creating a list of objects
 for item in media_samples: #media is a dictionary, how do i use media to initializing an instance
 	media_instance = Media(item) #object == instance
 	media_list.append(media_instance) #looped through and create a list
 
-# song_list = []
-# for item in song_samples:
-# 	song_instance = Song(item)
-# 	song_list.append(song_instance)
-#
-# movie_list = []
-# for item in movie_samples:
-# 	movie_instance = Movie(item)
-# 	movie_list.append(movie_instance)
-#
-# book_list = []
-# for item in book_samples:
-# 	book_instance = Book(item)
-# 	book_list.append(book_instance)
+song_list = []
+for item in song_samples:
+	song_instance = Song(item)
+	song_list.append(song_instance)
+
+movie_list = []
+for item in movie_samples:
+	movie_instance = Movie(item)
+	movie_list.append(movie_instance)
+
 
 ## You may want to do some investigation on these variables to make sure you understand correctly what type of value they hold, what's in each one!
 
