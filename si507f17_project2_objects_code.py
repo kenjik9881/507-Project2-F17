@@ -161,6 +161,7 @@ class Movie(Media):
 		self.minutes = int(self.minutes)
 		return self.minutes
 
+
 	def title_words_num(self):
 		return len(self.description)
 
@@ -257,19 +258,19 @@ print("\n***** PROBLEM 4 *****\n")
 movies = open("movies.csv","w")
 movies.write("title, artist, id, url, length\n")
 for movie in movie_list:
-	movies.write("{}, {}, {}, {}, {}\n".format(movie.title, movie.author, movie.itunes_id, movie.itunes_URL, movie.__len__))
+	movies.write('"{}", {}, {}, {}, {}\n'.format(movie.title, movie.author, movie.itunes_id, movie.itunes_URL, len(movie)))
 movies.close()
 
 songs = open("songs.csv","w")
 songs.write("title, artist, id, url, length\n")
 for song in song_list:
-	songs.write("{}, {}, {}, {}, {}\n".format(song.title, song.author, song.itunes_id, song.itunes_URL, song.__len__))
+	songs.write('"{}", {}, {}, {}, {}\n'.format(song.title, song.author, song.itunes_id, song.itunes_URL, len(song)))
 songs.close()
 
 media = open("media.csv","w")
 media.write("title, artist, id, url, length\n")
 for item in media_list:
-	media.write("{}, {}, {}, {}, {}\n".format(item.title, item.author, item.itunes_id, item.itunes_URL, item.__len__))
+	media.write('"{}", {}, {}, {}, {}\n'.format(item.title, item.author, item.itunes_id, item.itunes_URL, len(item)))
 media.close()
 
 ## Finally, write 3 CSV files:
